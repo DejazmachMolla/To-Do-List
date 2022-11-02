@@ -1,6 +1,6 @@
 ![](https://img.shields.io/badge/Microverse-blueviolet)
 
-# Webpack-Setup
+# To-Do-List
 
 > A To-Do-List app that tracks activities from start to completion
 
