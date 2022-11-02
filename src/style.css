@@ -1,3 +1,83 @@
 body {
-  background-color: bisque;
+  font-family: 'Open Sans', 'Lucida Grande', tahoma, verdana, arial, sans-serif;
+  background-color: #f1f2f5;
+}
+
+section {
+  width: 40vw;
+  margin: auto;
+  margin-top: 4rem;
+  box-shadow: 0px 2px 8px rgb(0 0 0 / 15%);
+  background-color: white;
+}
+
+li {
+  list-style: none;
+}
+
+ul {
+  padding-inline-start: 0;
+}
+
+.search-input > input {
+  flex-grow: 1;
+  font-style: italic;
+  color: rgb(165, 163, 163);
+  border: none;
+  padding: 0.5rem;
+}
+
+div.search-input > input:focus {
+  border: none;
+}
+
+input[type="checkbox"] {
+  border-color: #ddd;
+}
+
+section>div:first-child {
+  padding-top: 0.5rem;
+}
+
+section>div,
+ul>li:not(:last-child) {
+  border-bottom: 1px solid #ddd;
+  margin-bottom: .5rem;
+  padding: 0 1rem 0.5rem;
+}
+
+ul>li:last-child {
+  margin-bottom: .5rem;
+  padding: 0 1rem;
+}
+
+section > button {
+  padding: 1rem;
+  width: 100%;
+  border: none;
+  color: rgb(94, 93, 93);
+}
+
+ul li span,
+.list-lable {
+  color: rgb(94, 93, 93);
+}
+
+ul li span {
+  margin-left: 0.5rem;
+}
+
+.list-lable,
+.search-input,
+ul>li {
+  display: flex;
+  align-items: center;
+}
+
+.spacer {
+  flex: 1 1 auto;
+}
+
+i {
+  color: #ddd;
 }
