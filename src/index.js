@@ -17,15 +17,14 @@ class Task {
           <span class="drag-icon"><i class="fa fa-ellipsis-v" aria-hidden="true"></i></span>
       </li>
         
-      `
+      `;
   }
 }
 
-
-let tasks = [
+const tasks = [
   new Task('Go to gym', false, 0),
   new Task('Cook food', false, 1),
-  new Task('Meet friend', false, 2)
+  new Task('Meet friend', false, 2),
 ];
 
-tasks.forEach(t => t.display());
+tasks.forEach((t) => t.display());
