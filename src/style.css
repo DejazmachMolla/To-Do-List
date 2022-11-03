@@ -70,7 +70,8 @@ ul li span,
   color: rgb(94, 93, 93);
 }
 
-ul li span {
+ul li span,
+ul li input {
   margin-left: 0.5rem;
 }
 
@@ -81,3 +82,15 @@ ul li span {
 i {
   color: #ddd;
 }
+
+#add-icon {
+  border: none;
+  padding: 0;
+  margin: 0;
+  background-color: transparent;
+}
+/* 
+input[id^='input-'],
+input[id^='input-']:focus {
+  border: none;
+} */
