@@ -19,7 +19,7 @@ ul {
   padding-inline-start: 0;
 }
 
-.search-input > input {
+.search-input > input{
   flex-grow: 1;
   font-style: italic;
   color: rgb(165, 163, 163);
@@ -27,7 +27,12 @@ ul {
   padding: 0.5rem;
 }
 
-div.search-input > input:focus {
+.list-text {
+  flex-grow: 1;
+}
+
+input:focus {
+  outline: none;
   border: none;
 }
 
@@ -83,14 +88,14 @@ i {
   color: #ddd;
 }
 
-#add-icon {
+#add-icon,
+.delete-icon {
   border: none;
   padding: 0;
   margin: 0;
   background-color: transparent;
 }
-/* 
-input[id^='input-'],
-input[id^='input-']:focus {
-  border: none;
-} */
+
+.fa-trash {
+  color: red;
+}
