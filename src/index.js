@@ -1,9 +1,8 @@
 import './style.css';
-import Task from "./task";
+import Task from './task';
 
-
-let task = new Task();
+const task = new Task();
 
 task.createAddButtonEventListner();
-//task.createClickEventListner();
+// task.createClickEventListner();
 task.populateTasks();

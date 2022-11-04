@@ -19,7 +19,12 @@ ul {
   padding-inline-start: 0;
 }
 
-.search-input > input{
+ul li span,
+ul li input {
+  margin-left: 0.5rem;
+}
+
+.search-input > input {
   flex-grow: 1;
   font-style: italic;
   color: rgb(165, 163, 163);
@@ -73,11 +78,6 @@ section > button {
 ul li span,
 .list-lable {
   color: rgb(94, 93, 93);
-}
-
-ul li span,
-ul li input {
-  margin-left: 0.5rem;
 }
 
 .spacer {
