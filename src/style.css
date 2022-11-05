@@ -19,6 +19,11 @@ ul {
   padding-inline-start: 0;
 }
 
+ul li span,
+ul li input {
+  margin-left: 0.5rem;
+}
+
 .search-input > input {
   flex-grow: 1;
   font-style: italic;
@@ -27,7 +32,12 @@ ul {
   padding: 0.5rem;
 }
 
-div.search-input > input:focus {
+.list-text {
+  flex-grow: 1;
+}
+
+input:focus {
+  outline: none;
   border: none;
 }
 
@@ -70,14 +80,22 @@ ul li span,
   color: rgb(94, 93, 93);
 }
 
-ul li span {
-  margin-left: 0.5rem;
-}
-
 .spacer {
   flex: 1 1 auto;
 }
 
 i {
   color: #ddd;
+}
+
+#add-icon,
+.delete-icon {
+  border: none;
+  padding: 0;
+  margin: 0;
+  background-color: transparent;
+}
+
+.fa-trash {
+  color: red;
 }
