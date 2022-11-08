@@ -1,8 +1,10 @@
 import './style.css';
 import Task from './task';
 
-const task = new Task();
+Task.addButton = document.getElementById('add-icon');
+Task.tasks = JSON.parse(localStorage.getItem('tasksLocalStorage')) || [];
+Task.addedItemsUL = document.getElementById('list-ul');
+Task.toDoInput = document.getElementById('to-do-input');
 
-task.createAddButtonEventListner();
-// task.createClickEventListner();
-task.populateTasks();
+Task.createAddButtonEventListner();
+Task.populateTasks();
