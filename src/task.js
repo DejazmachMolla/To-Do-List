@@ -1,110 +1,152 @@
 export default class Task {
   constructor() {
-    this.tasks = JSON.parse(localStorage.getItem('tasksLocalStorage')) || [];
     this.description = document.getElementById('to-do-input').value;
     this.completed = false;
-    this.index = this.tasks.length + 1;
+    this.index = Task.tasks.length + 1;
     this.inputId = null;
-    this.editBox = document.getElementById(`input-${this.inputId}`);
+    this.editBox = this.inputId ? document.getElementById(`input-${this.inputId}`) : null;
     this.deleteBtn = document.getElementById('delete-icon');
-    this.addButton = document.getElementById('add-icon');
-    this.addedItemsUL = document.getElementById('list-ul');
   }
 
-  createClickEventListner = () => {
-    const descriptions = this.addedItemsUL.querySelectorAll('.list-text');
-    const dragIcons = this.addedItemsUL.querySelectorAll('.drag-icon');
+  createKeyUpEventListenerForEdit = () => {
+    this.editBox.addEventListener('keyup', (e) => {
+      e.preventDefault();
+      Task.tasks.find((t) => t.index === Number.parseInt(this.inputId, 10))
+        .description = e.target.value;
+      this.description = e.target.value;
+      Task.updateLocalStorage();
+    });
+  }
+
+  static createClickEventListner = () => {
+    const descriptions = Task.addedItemsUL.querySelectorAll('.list-text');
+    const dragIcons = Task.addedItemsUL.querySelectorAll('.drag-icon');
 
     descriptions.forEach((desc, index) => {
       desc.addEventListener('click', (e) => {
         e.preventDefault();
+
         const parent = e.target.parentNode;
         desc.outerHTML = `
-          <input type="text" id="input-${parent.id}" value=${desc.textContent}>
+          <input type="text" id="input-${parent.id}" value="">
         `;
+        document.getElementById(`input-${parent.id}`).value = desc.textContent;
         dragIcons[index].outerHTML = `
           <button class="delete-icon" id="delete-icon"><i class="fa fa-trash" aria-hidden="true"></i></button>
         `;
-        this.inputId = parent.id;
-        this.editBox = document.getElementById(`input-${this.inputId}`);
-        this.deleteBtn = document.getElementById('delete-icon');
+        const task = new Task();
+        task.inputId = parent.id;
+        task.editBox = document.getElementById(`input-${task.inputId}`);
+        task.deleteBtn = document.getElementById('delete-icon');
 
-        document.getElementById(`input-${parent.id}`).focus();
-        const { value } = document.getElementById(`input-${parent.id}`);
-        document.getElementById(`input-${parent.id}`).value = '';
-        document.getElementById(`input-${parent.id}`).value = value;
+        task.editBox.focus();
+        const { value } = task.editBox;
+        task.editBox.value = '';
+        task.editBox.value = value;
 
-        this.createKeyUpEventListenerForEdit();
-        this.createBlurEventListener();
-        this.createDeleteEventListener();
+        task.createKeyUpEventListenerForEdit();
+        task.createBlurEventListener();
+        task.createDeleteEventListener();
       });
     });
   }
 
-  updateLocalStorage() {
-    localStorage.setItem('tasksLocalStorage', JSON.stringify(this.tasks));
+  static createCheckEventlisteners = () => {
+    const checks = document.querySelectorAll('.complete-check');
+    checks.forEach((check, index) => {
+      check.addEventListener('change', (e) => {
+        e.preventDefault();
+
+        Task.tasks[index].completed = !Task.tasks[index].completed;
+        if (Task.tasks[index].completed) {
+          document.getElementById(`${index + 1}`).querySelector('.list-text').style.textDecoration = 'line-through';
+        } else {
+          document.getElementById(`${index + 1}`).querySelector('.list-text').style.textDecoration = 'none';
+        }
+        Task.updateLocalStorage();
+      });
+    });
+  }
+
+  static createCompleteRemovalListener = () => {
+    const removeBtn = document.getElementById('remove-complete');
+    removeBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      const tasksToDelete = new Set(Task.tasks
+        .filter((task) => task.completed === true).map((t) => t.index));
+      Task.tasks = Task.tasks.filter((task) => !tasksToDelete.has(task.index));
+
+      Task.addedItemsUL.innerHTML = '';
+      Task.updateIdsAfterRemoval();
+      Task.populateTasks();
+      Task.updateLocalStorage();
+    });
+  }
+
+  static updateIdsAfterRemoval = () => {
+    let count = 1;
+
+    Task.tasks.forEach((t) => {
+      t.index = count;
+      count += 1;
+    });
+  }
+
+  static updateLocalStorage = () => {
+    localStorage.setItem('tasksLocalStorage', JSON.stringify(Task.tasks));
   }
 
   display = () => {
     document.getElementById('list-ul').innerHTML += `
       
       <li id=${this.index}>
-        <input type="checkbox">
-          <span class="list-text">${this.description}</span> 
-          <span class="spacer"></span>
-          <span class="drag-icon"><i class="fa fa-ellipsis-v" aria-hidden="true"></i></span>
+        <input ${this.completed ? 'checked' : ''} type="checkbox" id="check-${this.index}" class="complete-check">
+        <span style="text-decoration:${this.completed ? 'line-through' : 'none'}" class="list-text">${this.description}</span> 
+        <span class="spacer"></span>
+        <span class="drag-icon"><i class="fa fa-ellipsis-v" aria-hidden="true"></i></span>
       </li>
         
       `;
   }
 
   add = () => {
-    const task = new Task();
-    task.tasks = null;
-    task.display();
-    this.tasks.push(task);
-    this.updateLocalStorage();
-    document.getElementById('to-do-input').value = '';
-    this.createClickEventListner();
-    return this.tasks;
+    this.display();
+    Task.tasks.push(this);
+    Task.updateLocalStorage();
+    Task.toDoInput.value = '';
+    Task.createClickEventListner();
+    Task.createCheckEventlisteners();
   }
 
-  createAddButtonEventListner = () => {
-    this.addButton.addEventListener('click', (e) => {
+  static createAddButtonEventListner = () => {
+    Task.addButton.addEventListener('click', (e) => {
       e.preventDefault();
-      this.add();
+      const task = new Task();
+      task.add();
     });
   }
 
-  createKeyUpEventListenerForEdit = () => {
-    this.editBox.addEventListener('keyup', (e) => {
-      e.preventDefault();
-      this.tasks.find((t) => t.index === Number.parseInt(this.inputId, 10))
-        .description = e.target.value;
-      this.description = e.target.value;
-      this.updateLocalStorage();
-    });
-  }
-
-  populateTasks() {
-    this.tasks.forEach((t) => {
+  static populateTasks() {
+    Task.tasks.forEach((t) => {
       const ta = new Task();
-      ta.tasks = null;
       ta.completed = t.completed;
       ta.description = t.description;
       ta.index = t.index;
       ta.display();
     });
-    if (this.tasks.length > 0) this.createClickEventListner();
+    if (Task.tasks.length > 0) {
+      Task.createClickEventListner();
+      Task.createCheckEventlisteners();
+    }
   }
 
-  respondBlurAndDelete = () => {
-    this.addedItemsUL.innerHTML = '';
-    this.populateTasks();
+  static respondBlurAndDelete = () => {
+    Task.addedItemsUL.innerHTML = '';
+    Task.populateTasks();
   }
 
   createBlurEventListener = () => {
-    this.editBox.addEventListener('blur', this.respondBlurAndDelete);
+    this.editBox.addEventListener('blur', Task.respondBlurAndDelete);
   }
 
   createDeleteEventListener = () => {
@@ -112,29 +154,29 @@ export default class Task {
     this.createAddBlurListenerWhenMouseLeaveDelete();
     this.deleteBtn.addEventListener('click', (e) => {
       const liParent = e.target.parentNode.parentNode;
-      this.tasks = this.tasks.filter((t) => t.index !== Number.parseInt(liParent.id, 10));
-      this.tasks.map((t) => {
+      Task.tasks = Task.tasks.filter((t) => t.index !== Number.parseInt(liParent.id, 10));
+      Task.tasks.map((t) => {
         if (t.index > Number.parseInt(liParent.id, 10)) {
           t.index -= 1;
         }
         return t;
       });
-      this.updateLocalStorage();
-      this.respondBlurAndDelete();
+      Task.updateLocalStorage();
+      Task.respondBlurAndDelete();
     });
   }
 
   createRemoveBlurListenerWhenMouseOverDelete = () => {
     this.deleteBtn.addEventListener('mouseover', (e) => {
       e.preventDefault();
-      this.editBox.removeEventListener('blur', this.respondBlurAndDelete);
+      this.editBox.removeEventListener('blur', Task.respondBlurAndDelete);
     });
   }
 
   createAddBlurListenerWhenMouseLeaveDelete = () => {
     this.deleteBtn.addEventListener('mouseleave', (e) => {
       e.preventDefault();
-      this.editBox.addEventListener('blur', this.respondBlurAndDelete);
+      this.editBox.addEventListener('blur', Task.respondBlurAndDelete);
     });
   }
 }
