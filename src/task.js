@@ -56,14 +56,14 @@ export default class Task {
     checks.forEach((check, index) => {
       check.addEventListener('change', (e) => {
         e.preventDefault();
-        if (Task.completedIndexes.includes(index)) {
-          Task.completedIndexes = Task.completedIndexes.filter((i) => i !== index);
-          document.getElementById(`${index}`).querySelector('.list-text').style.textDecoration = 'none';
-        } else {
-          Task.completedIndexes.push(index);
+
+        Task.tasks[index-1].completed = !Task.tasks[index-1].completed;
+        if(Task.tasks[index-1].completed) {
           document.getElementById(`${index}`).querySelector('.list-text').style.textDecoration = 'line-through';
+        } else {
+          document.getElementById(`${index}`).querySelector('.list-text').style.textDecoration = 'none';
         }
-        localStorage.setItem('completedItems', JSON.stringify(Task.completedIndexes));
+        Task.updateLocalStorage();
       });
     });
   }
@@ -72,9 +72,11 @@ export default class Task {
     const removeBtn = document.getElementById('remove-complete');
     removeBtn.addEventListener('click', (e) => {
       e.preventDefault();
-      Task.completedIndexes.forEach((i) => {
-        Task.tasks = Task.tasks.filter((t) => t.index !== i);
+      const tasksToDelete = new Set(Task.tasks.filter(task => task.completed == true).map(t => t.index));
+      Task.tasks = Task.tasks.filter((task) => {
+        return !tasksToDelete.has(task.index);
       });
+
       Task.addedItemsUL.innerHTML = '';
       Task.updateIdsAfterRemoval();
       Task.populateTasks();
@@ -89,8 +91,6 @@ export default class Task {
       t.index = count;
       count += 1;
     });
-    Task.completedIndexes = [];
-    localStorage.setItem('completedItems', JSON.stringify([]));
   }
 
   static updateLocalStorage = () => {
@@ -101,8 +101,8 @@ export default class Task {
     document.getElementById('list-ul').innerHTML += `
       
       <li id=${this.index}>
-        <input ${Task.completedIndexes.includes(this.index) ? 'checked' : ''} type="checkbox" id="check-${this.index}" class="complete-check">
-        <span style="text-decoration:${Task.completedIndexes.includes(this.index) ? 'line-through' : 'none'}" class="list-text">${this.description}</span> 
+        <input ${this.completed ? 'checked' : ''} type="checkbox" id="check-${this.index}" class="complete-check">
+        <span style="text-decoration:${this.completed ? 'line-through' : 'none'}" class="list-text">${this.description}</span> 
         <span class="spacer"></span>
         <span class="drag-icon"><i class="fa fa-ellipsis-v" aria-hidden="true"></i></span>
       </li>
