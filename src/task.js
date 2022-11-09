@@ -58,10 +58,10 @@ export default class Task {
         e.preventDefault();
 
         Task.tasks[index].completed = !Task.tasks[index].completed;
-        if(Task.tasks[index].completed) {
-          document.getElementById(`${index+1}`).querySelector('.list-text').style.textDecoration = 'line-through';
+        if (Task.tasks[index].completed) {
+          document.getElementById(`${index + 1}`).querySelector('.list-text').style.textDecoration = 'line-through';
         } else {
-          document.getElementById(`${index+1}`).querySelector('.list-text').style.textDecoration = 'none';
+          document.getElementById(`${index + 1}`).querySelector('.list-text').style.textDecoration = 'none';
         }
         Task.updateLocalStorage();
       });
@@ -72,10 +72,9 @@ export default class Task {
     const removeBtn = document.getElementById('remove-complete');
     removeBtn.addEventListener('click', (e) => {
       e.preventDefault();
-      const tasksToDelete = new Set(Task.tasks.filter(task => task.completed == true).map(t => t.index));
-      Task.tasks = Task.tasks.filter((task) => {
-        return !tasksToDelete.has(task.index);
-      });
+      const tasksToDelete = new Set(Task.tasks
+        .filter((task) => task.completed === true).map((t) => t.index));
+      Task.tasks = Task.tasks.filter((task) => !tasksToDelete.has(task.index));
 
       Task.addedItemsUL.innerHTML = '';
       Task.updateIdsAfterRemoval();
