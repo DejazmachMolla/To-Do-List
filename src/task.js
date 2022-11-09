@@ -25,7 +25,7 @@ export default class Task {
     descriptions.forEach((desc, index) => {
       desc.addEventListener('click', (e) => {
         e.preventDefault();
-        
+
         const parent = e.target.parentNode;
         desc.outerHTML = `
           <input type="text" id="input-${parent.id}" value="">
@@ -34,7 +34,7 @@ export default class Task {
         dragIcons[index].outerHTML = `
           <button class="delete-icon" id="delete-icon"><i class="fa fa-trash" aria-hidden="true"></i></button>
         `;
-        let task = new Task();
+        const task = new Task();
         task.inputId = parent.id;
         task.editBox = document.getElementById(`input-${task.inputId}`);
         task.deleteBtn = document.getElementById('delete-icon');
@@ -54,42 +54,41 @@ export default class Task {
   static createCheckEventlisteners = () => {
     const checks = document.querySelectorAll('.complete-check');
     checks.forEach((check, index) => {
-      check.addEventListener('change', e => {
+      check.addEventListener('change', (e) => {
         e.preventDefault();
-        console.log('typeof Task.completedIndexes '+typeof(Task.completedIndexes))
-        if(Task.completedIndexes.includes(index))  {
-          Task.completedIndexes = Task.completedIndexes.filter(i => i !== index);
+        if (Task.completedIndexes.includes(index)) {
+          Task.completedIndexes = Task.completedIndexes.filter((i) => i !== index);
           document.getElementById(`${index}`).querySelector('.list-text').style.textDecoration = 'none';
         } else {
           Task.completedIndexes.push(index);
           document.getElementById(`${index}`).querySelector('.list-text').style.textDecoration = 'line-through';
         }
         localStorage.setItem('completedItems', JSON.stringify(Task.completedIndexes));
-        console.log('completedIndexes : '+Task.completedIndexes);
-      })
-    })
+      });
+    });
   }
 
   static createCompleteRemovalListener = () => {
     const removeBtn = document.getElementById('remove-complete');
-    removeBtn.addEventListener('click', e => {
+    removeBtn.addEventListener('click', (e) => {
       e.preventDefault();
-      Task.completedIndexes.forEach(i => {
+      Task.completedIndexes.forEach((i) => {
         Task.tasks = Task.tasks.filter((t) => t.index !== i);
-      })
+      });
       Task.addedItemsUL.innerHTML = '';
       Task.updateIdsAfterRemoval();
       Task.populateTasks();
       Task.updateLocalStorage();
-    })
+    });
   }
 
   static updateIdsAfterRemoval = () => {
     let count = 1;
-    
-    Task.tasks.forEach(t => {
-      t.index = count++;
-    })
+
+    Task.tasks.forEach((t) => {
+      t.index = count;
+      count += 1;
+    });
     Task.completedIndexes = [];
     localStorage.setItem('completedItems', JSON.stringify([]));
   }
