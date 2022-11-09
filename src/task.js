@@ -90,6 +90,7 @@ export default class Task {
     Task.tasks.forEach(t => {
       t.index = count++;
     })
+    Task.completedIndexes = [];
     localStorage.setItem('completedItems', JSON.stringify([]));
   }
 
@@ -101,8 +102,8 @@ export default class Task {
     document.getElementById('list-ul').innerHTML += `
       
       <li id=${this.index}>
-        <input type="checkbox" id="check-${this.index}" class="complete-check">
-        <span class="list-text">${this.description}</span> 
+        <input ${Task.completedIndexes.includes(this.index) ? 'checked' : ''} type="checkbox" id="check-${this.index}" class="complete-check">
+        <span style="text-decoration:${Task.completedIndexes.includes(this.index) ? 'line-through' : 'none'}" class="list-text">${this.description}</span> 
         <span class="spacer"></span>
         <span class="drag-icon"><i class="fa fa-ellipsis-v" aria-hidden="true"></i></span>
       </li>
