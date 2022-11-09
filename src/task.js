@@ -57,11 +57,11 @@ export default class Task {
       check.addEventListener('change', (e) => {
         e.preventDefault();
 
-        Task.tasks[index-1].completed = !Task.tasks[index-1].completed;
-        if(Task.tasks[index-1].completed) {
-          document.getElementById(`${index}`).querySelector('.list-text').style.textDecoration = 'line-through';
+        Task.tasks[index].completed = !Task.tasks[index].completed;
+        if(Task.tasks[index].completed) {
+          document.getElementById(`${index+1}`).querySelector('.list-text').style.textDecoration = 'line-through';
         } else {
-          document.getElementById(`${index}`).querySelector('.list-text').style.textDecoration = 'none';
+          document.getElementById(`${index+1}`).querySelector('.list-text').style.textDecoration = 'none';
         }
         Task.updateLocalStorage();
       });
