@@ -51,7 +51,49 @@ export default class Task {
     });
   }
 
-  static updateLocalStorage() {
+  static createCheckEventlisteners = () => {
+    const checks = document.querySelectorAll('.complete-check');
+    checks.forEach((check, index) => {
+      check.addEventListener('change', e => {
+        e.preventDefault();
+        console.log('typeof Task.completedIndexes '+typeof(Task.completedIndexes))
+        if(Task.completedIndexes.includes(index))  {
+          Task.completedIndexes = Task.completedIndexes.filter(i => i !== index);
+          document.getElementById(`${index}`).querySelector('.list-text').style.textDecoration = 'none';
+        } else {
+          Task.completedIndexes.push(index);
+          document.getElementById(`${index}`).querySelector('.list-text').style.textDecoration = 'line-through';
+        }
+        localStorage.setItem('completedItems', JSON.stringify(Task.completedIndexes));
+        console.log('completedIndexes : '+Task.completedIndexes);
+      })
+    })
+  }
+
+  static createCompleteRemovalListener = () => {
+    const removeBtn = document.getElementById('remove-complete');
+    removeBtn.addEventListener('click', e => {
+      e.preventDefault();
+      Task.completedIndexes.forEach(i => {
+        Task.tasks = Task.tasks.filter((t) => t.index !== i);
+      })
+      Task.addedItemsUL.innerHTML = '';
+      Task.updateIdsAfterRemoval();
+      Task.populateTasks();
+      Task.updateLocalStorage();
+    })
+  }
+
+  static updateIdsAfterRemoval = () => {
+    let count = 1;
+    
+    Task.tasks.forEach(t => {
+      t.index = count++;
+    })
+    localStorage.setItem('completedItems', JSON.stringify([]));
+  }
+
+  static updateLocalStorage = () => {
     localStorage.setItem('tasksLocalStorage', JSON.stringify(Task.tasks));
   }
 
@@ -59,10 +101,10 @@ export default class Task {
     document.getElementById('list-ul').innerHTML += `
       
       <li id=${this.index}>
-        <input type="checkbox">
-          <span class="list-text">${this.description}</span> 
-          <span class="spacer"></span>
-          <span class="drag-icon"><i class="fa fa-ellipsis-v" aria-hidden="true"></i></span>
+        <input type="checkbox" id="check-${this.index}" class="complete-check">
+        <span class="list-text">${this.description}</span> 
+        <span class="spacer"></span>
+        <span class="drag-icon"><i class="fa fa-ellipsis-v" aria-hidden="true"></i></span>
       </li>
         
       `;
@@ -74,6 +116,7 @@ export default class Task {
     Task.updateLocalStorage();
     Task.toDoInput.value = '';
     Task.createClickEventListner();
+    Task.createCheckEventlisteners();
   }
 
   static createAddButtonEventListner = () => {
@@ -92,7 +135,10 @@ export default class Task {
       ta.index = t.index;
       ta.display();
     });
-    if (Task.tasks.length > 0) Task.createClickEventListner();
+    if (Task.tasks.length > 0) {
+      Task.createClickEventListner();
+      Task.createCheckEventlisteners();
+    }
   }
 
   static respondBlurAndDelete = () => {
